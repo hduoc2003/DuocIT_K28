@@ -49,7 +49,7 @@ private:
     }
 
 public:
-    int l,r;
+    int l,r; /// query range
 
     void resize(int _l, int _r) {l = _l, r = _r, root = nullptr;}
 
