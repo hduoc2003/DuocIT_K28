@@ -1,4 +1,5 @@
 /// for more detail explanation: 932F Codeforces, Leafy_ submission
+/// query min
 
 bool type;
 
