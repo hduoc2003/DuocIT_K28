@@ -11,8 +11,8 @@ private:
     struct line
     {
         unit a,b;
-        mutable double i;
-
+        mutable double i; /// if we use std::set or std::multiset, we can not change value of element
+                          /// but using (mutable) will help ours
         line() {}
         line(unit _a, unit _b, double _i = 0) {a = _a, b = _b, i = _i;}
 
