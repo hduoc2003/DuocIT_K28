@@ -57,12 +57,12 @@ public:
         auto cur = s.insert(d);
         if (bad(cur)) {s.erase(cur); return;} /// if (cur) is bad then stop
         auto nxt = next(cur), pre = cur;
-        while (nxt != s.end() && bad(nxt)) /// check if we can use (cur) to remove nxt
+        while (nxt != s.end() && bad(nxt)) /// check if we can use (cur) to remove (nxt)
             nxt = s.erase(nxt);
         get_intersect(cur); /// update intersection
-        while (cur != s.begin() && bad(pre = prev(cur))) /// check if we can use (cur) to remove pre
+        while (cur != s.begin() && bad(pre = prev(cur))) /// check if we can use (cur) to remove (pre)
             s.erase(pre);
-        if (cur != s.begin()) get_intersect(pre); /// update pre's intersection
+        if (cur != s.begin()) get_intersect(pre); /// update (pre's) intersection
     }
 
     unit query(unit p)
