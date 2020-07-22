@@ -1,4 +1,3 @@
-/// for more detail explanation: 932F Codeforces, Leafy_ submission
 /// query min
 
 bool type;
@@ -17,49 +16,60 @@ private:
         line() {}
         line(unit _a, unit _b, double _i = 0) {a = _a, b = _b, i = _i;}
 
-        unit operator() (unit x) {return a*x + b;}
-        double operator ^ (const line& other) const
+        unit operator() (unit x) {return a*x + b;} /// get value at point x
+        double operator ^ (const line& other) const /// get intersection with other line
         {
             return (double(other.b - b) / (a - other.a));
         }
-        bool operator < (const line& other) const
-        {
+        bool operator < (const line& other) const /// type = 1 -> to query
+        {                                         /// type = 0 -> sort according slope  
             return type ? i < other.i : a > other.a;
         }
     };
 
     multiset <line> s;
 
-    bool bad(auto x, auto y) /// check if y is bad
+    bool bad(auto y) /// check if y is bad
+    {                /// x = l1, y = l2, z = l3
+        auto z = next(y);
+        if (y == s.begin())
+        {
+            if (z == s.end()) return false;
+            return y->a == z->a && y->b >= z->b;
+        }
+        auto x = prev(y);
+        if (z == s.end())
+            return y->a == x->a && y->b >= x->b;
+        return (*x ^ *z) <= (*x ^ *y);
+    }
+
+    void get_intersect(auto& x) /// get intersection with the next line
     {
-        double& xi = x->i;
-        if (y == s.end()) {xi = inf; return false;}
-        if (x->a == y->a)
-            xi = (x->b < y->b ? inf : -inf);
-        else
-            xi = *x ^ *y;
-        return xi >= y->i;
+        auto nxt = next(x);
+        x->i = (nxt == s.end() ? inf : *x ^ *nxt);
     }
 
 public:
+
     void insert(unit a, unit b)
     {
         line d = line(a,b);
-        auto cur = s.insert(d), nxt = cur, pre = cur;
-        ++nxt;
-        while (bad(cur, nxt))
+        auto cur = s.insert(d);
+        if (bad(cur)) {s.erase(cur); return;} /// if (cur) is bad then stop
+        auto nxt = next(cur), pre = cur;
+        while (nxt != s.end() && bad(nxt)) /// check if we can use (cur) to remove nxt
             nxt = s.erase(nxt);
-        if (pre != s.begin() && bad(--pre, cur))
-            bad(pre, cur = s.erase(cur));
-        while ((cur = pre) != s.begin() && bad(--pre, cur))
-            bad(pre, s.erase(cur));
+        get_intersect(cur); /// update intersection
+        while (cur != s.begin() && bad(pre = prev(cur))) /// check if we can use (cur) to remove pre
+            s.erase(pre);
+        if (cur != s.begin()) get_intersect(pre); /// update pre's intersection
     }
 
-    unit query(unit x)
+    unit query(unit p)
     {
         type = true;
-        auto it = *s.lower_bound(line(0,0,x));
+        auto it = *s.lower_bound(line(0,0,p));
         type = false;
-        return it(x);
+        return it(p);
     }
 };
