@@ -1,0 +1,42 @@
+struct point
+{
+    double x,y;
+
+    point(){}
+    point(const double& x, const double& y): x(x), y(y) {}
+
+    bool operator < (const point& other) const
+    {
+        if (other.x != x)
+            return x < other.x;
+        return y < other.y;
+    }
+
+    bool operator == (const point& other) const
+    {
+        return x == other.x && y == other.y;
+    }
+};
+
+struct ptdt
+{
+    double a,b,c;
+
+    ptdt(const point& p1, const point& p2)
+    {
+        a = p2.y - p1.y, b = -(p2.x - p1.x);
+        c = a*p1.x + b*p1.y;
+    }
+};
+
+point intersect(point& a, point& b, point& c, point& d)
+{
+    auto [a1, b1, c1] = ptdt(a,b);
+    auto [a2, b2, c2] = ptdt(c,d);
+    if (a1*b2 == a2*b1)
+        return point(inf,inf);
+    double x = (c2*b1 - c1*b2) / (a2*b1 - a1*b2);
+    double y = (c2*a1 - c1*a2) / (b2*a1 - b1*a2);
+    point res = point(x,y);
+    return res;
+}
