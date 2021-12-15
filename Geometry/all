@@ -39,7 +39,6 @@ struct Point;
 struct Circle;
 struct Line;
 
-
 struct Point
 {
     double x,y;
